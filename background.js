@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   });
 
   // Function to send diff to Claude API
-  async function sendDiffToClaude(diff) {
+  async function sendDiffToClaude(diff, prompt) {
 	const apiUrl = 'https://api.anthropic.com/v1/messages';
 
 	// Get API key (ensure getClaudeApiKey is defined and works properly)
@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	  model: 'claude-3-5-sonnet-20240620',
 	  max_tokens: 1024,
 	  messages: [
-		{ role: 'user', content: diff },
+		{ role: 'user', content: `${prompt}\n\n${diff}` },
 	  ],
 	};
 
