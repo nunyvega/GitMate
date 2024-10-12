@@ -23,26 +23,34 @@ function addCustomButton() {
     button.onclick = async () => {
       try {
         const diff = getPRDiffFromPage();
-        chrome.runtime.sendMessage(
-          { type: 'sendDiffToClaude', diff: diff },
-          (response) => {
-            console.log(response);
-            if (response.success) {
-              console.log('Claude AI response:', response.data);
-              alert('gitMate action triggered and diff sent to Claude AI!');
-            } else {
-              console.error(response.error);
-              alert('Failed to send diff to Claude AI');
-            }
-          }
-        );
+        await sendDiffToClaudeAI(diff);
       } catch (error) {
         console.error(error);
-        alert('Failed to send diff to Claude AI');
+        showGitMateProblem('Failed to send diff to Claude AI');
       }
     };
     diffbarDetails.appendChild(button);
   }
+}
+
+async function sendDiffToClaudeAI(diff) {
+  const prompt = `Explain the following diff in a way that is easy to understand
+
+  Find any issues with the code and suggest fixes.
+  `;
+  chrome.runtime.sendMessage(
+    { type: 'sendDiffToClaude', diff: diff, prompt: prompt },
+    (response) => {
+      console.log(response);
+      if (response.success) {
+        console.log('Claude AI response:', response.data);
+        showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
+      } else {
+        console.error(response.error);
+        showGitMateProblem('Failed to send diff to Claude AI');
+      }
+    }
+  );
 }
 
 // Run the function when the DOM is fully loaded

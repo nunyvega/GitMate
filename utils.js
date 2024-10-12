@@ -19,3 +19,13 @@ if (typeof window !== 'undefined') {
   window.getClaudeApiKey = getClaudeApiKey;
   window.setClaudeApiKey = setClaudeApiKey;
 }
+
+
+function showAiApiError( response, errorMessage ) {
+	console.error(errorMessage);
+  throw new Error(`GitMate: Failed to send message to Claude AI: ${response.status} - ${errorMessage}`);
+}
+
+function showGitMateProblem(errorMessage) {
+  console.info(`GitMate: ${errorMessage}`);
+}
