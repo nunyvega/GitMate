@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 		return result;
 	  } else {
 		const errorMessage = await response.text();
-		throw new Error(`Failed to send message to Claude AI: ${response.status} - ${errorMessage}`);
+		showAiApiError(showAiApiError, errorMessage );
 	  }
 	} catch (error) {
 	  console.error('Error occurred while sending diff to Claude:', error);

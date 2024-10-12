@@ -29,16 +29,16 @@ function addCustomButton() {
             console.log(response);
             if (response.success) {
               console.log('Claude AI response:', response.data);
-              alert('gitMate action triggered and diff sent to Claude AI!');
+              showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
             } else {
               console.error(response.error);
-              alert('Failed to send diff to Claude AI');
+              showGitMateProblem('Failed to send diff to Claude AI');
             }
           }
         );
       } catch (error) {
         console.error(error);
-        alert('Failed to send diff to Claude AI');
+        showGitMateProblem('Failed to send diff to Claude AI');
       }
     };
     diffbarDetails.appendChild(button);
