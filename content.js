@@ -1,7 +1,7 @@
 // content.js
 
 // Log to verify the script is running
-console.log('gitMate content script loaded!!');
+console.log('gitMate content script loaded!!!!!!!!!!');
 
 // Add a custom button to GitHub PR pages
 function addCustomButton() {
@@ -14,6 +14,7 @@ function addCustomButton() {
     button.id = 'gitmate-button';
     button.textContent = 'gitMate Action';
     button.style.marginLeft = '8px';
+    button.classList.add('Button--primary', 'Button--big', 'Button');
     button.onclick = () => {
       alert('gitMate is processing your request...');
     };
