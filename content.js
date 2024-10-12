@@ -26,6 +26,7 @@ function addCustomButton() {
         chrome.runtime.sendMessage(
           { type: 'sendDiffToClaude', diff: diff },
           (response) => {
+            console.log(response);
             if (response.success) {
               console.log('Claude AI response:', response.data);
               alert('gitMate action triggered and diff sent to Claude AI!');

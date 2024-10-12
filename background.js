@@ -1,18 +1,39 @@
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+importScripts('utils.js');
+// Listener for messages from content script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.type === 'sendDiffToClaude') {
-	  try {
-		const result = await sendDiffToClaude(request.diff);
-		sendResponse({ success: true, data: result });
-	  } catch (error) {
-		sendResponse({ success: false, error: error.message });
-	  }
-	  return true; // This keeps the message channel open for the async response.
+	  sendDiffToClaude(request.diff)
+		.then((result) => {
+		  sendResponse({ success: true, data: result });
+		})
+		.catch((error) => {
+		  sendResponse({ success: false, error: error.message });
+		});
+
+	  // Keep the message channel open for the async response
+	  return true;
 	}
   });
 
+  // Function to send diff to Claude API
   async function sendDiffToClaude(diff) {
 	const apiUrl = 'https://api.anthropic.com/v1/messages';
-	const API_KEY = 'YOUR_API_KEY_HERE'; // Store the API key securely (replace with your actual key)
+
+	// Get API key (ensure getClaudeApiKey is defined and works properly)
+	let API_KEY;
+	try {
+		console.log(getClaudeApiKey);
+	  API_KEY = await getClaudeApiKey();
+	  console.log(API_KEY);
+	} catch (error) {
+	  console.error('Failed to get API Key:', error);
+	  throw new Error('Failed to retrieve API key');
+	}
+
+	// Ensure the API key is properly retrieved
+	if (!API_KEY) {
+	  throw new Error('API Key is undefined or null');
+	}
 
 	const payload = {
 	  model: 'claude-3-5-sonnet-20240620',
@@ -42,7 +63,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 		throw new Error(`Failed to send message to Claude AI: ${response.status} - ${errorMessage}`);
 	  }
 	} catch (error) {
-	  console.error('Error occurred:', error);
+	  console.error('Error occurred while sending diff to Claude:', error);
 	  throw error;
 	}
   }
