@@ -1,7 +1,8 @@
 // options.js
 
 // Saves options to chrome.storage
-function saveOptions() {
+function saveOptions(event) {
+  event.preventDefault(); // Prevents the form from submitting and reloading the page
   const apiKey = document.getElementById('apiKey').value;
 
   // Save the API key to chrome.storage
@@ -25,4 +26,4 @@ function restoreOptions() {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', restoreOptions);
-document.getElementById('save').addEventListener('click', saveOptions);
+document.getElementById('options-form').addEventListener('submit', saveOptions);
