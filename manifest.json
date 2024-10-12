@@ -6,8 +6,12 @@
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": [
     "https://github.com/*",
-    "https://patch-diff.githubusercontent.com/*"
+    "https://patch-diff.githubusercontent.com/*",
+    "https://api.anthropic.com/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://github.com/*"],
