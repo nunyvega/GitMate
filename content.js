@@ -23,10 +23,13 @@ function addCustomButton() {
 		button.onclick = async () => {
 			try {
 				const diff = getPRDiffFromPage();
-				await sendDiffToClaudeAI(diff);
+				await sendDiffToAi(diff, `Explain the following diff in a way that is easy to understand
+
+				Find any issues with the code and suggest fixes.
+				`);
 			} catch (error) {
 				console.error(error);
-				showGitMateProblem('Failed to send diff to Claude AI');
+				showGitMateProblem('Failed to send diff to AI');
 			}
 		};
 		diffbarDetails.appendChild(button);
@@ -116,25 +119,6 @@ function createPopup(message) {
 	document.body.appendChild(popup);
 }
 
-async function sendDiffToClaudeAI(diff) {
-	const prompt = `Explain the following diff in a way that is easy to understand
-
-	Find any issues with the code and suggest fixes.
-	`;
-	chrome.runtime.sendMessage({type: 'sendDiffToClaude', diff: diff, prompt: prompt}, (response) => {
-		console.log(response);
-		if (response.success) {
-			console.log('Claude AI response:', response.data);
-			const message = response.data.content[0].text;
-			createPopup(message);
-			showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
-		} else {
-			console.error(response.error);
-			showGitMateProblem('Failed to send diff to Claude AI');
-		}
-	});
-}
-
 async function sendFollowUpToClaude(question, contentElement) {
 	const loadingMessage = document.createElement('p');
 	loadingMessage.textContent = 'Loading...';
@@ -166,6 +150,25 @@ async function sendFollowUpToClaude(question, contentElement) {
 		errorMessage.style.color = 'red';
 		contentElement.appendChild(errorMessage);
 	}
+}
+
+async function sendDiffToAi(diff, prompt) {
+	chrome.runtime.sendMessage(
+		{ type: 'sendDiffToAi', diff, prompt },
+		(response) => {
+			console.log(response);
+			if (response.success) {
+				// Assuming the desired string is in response.data.message
+				console.log('Claude AI response:', response.data.content[0].text);
+				const message = response.data.content[0].text;
+				createPopup(message);
+				showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
+			} else {
+				console.error(response.error);
+				showGitMateProblem('Failed to send diff to Claude AI');
+			}
+		}
+	);
 }
 
 // Run the function when the DOM is fully loaded
