@@ -4,11 +4,18 @@
   "version": "1.0",
   "description": "Enhance GitHub pull request code reviews with additional features.",
   "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": ["https://github.com/*"],
+  "host_permissions": [
+    "https://github.com/*",
+    "https://patch-diff.githubusercontent.com/*",
+    "https://api.anthropic.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://github.com/*"],
-      "js": ["content.js"]
+      "js": ["content.js", "utils.js"]
     }
   ],
   "options_ui": {
