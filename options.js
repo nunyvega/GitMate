@@ -6,7 +6,7 @@ function saveOptions(event) {
   const apiKey = document.getElementById('apiKey').value;
 
   // Save the API key to chrome.storage
-  chrome.storage.sync.set({openAIApiKey: apiKey}, () => {
+  chrome.storage.sync.set({claudeApiKey: apiKey}, () => {
     // Update status to let user know options were saved.
     const status = document.getElementById('status');
     status.textContent = 'API key saved.';
@@ -19,8 +19,8 @@ function saveOptions(event) {
 // Restores the API key from chrome.storage
 function restoreOptions() {
   // Use default value '' (empty string)
-  chrome.storage.sync.get({openAIApiKey: ''}, (items) => {
-    document.getElementById('apiKey').value = items.openAIApiKey;
+  chrome.storage.sync.get({claudeApiKey: ''}, (items) => {
+    document.getElementById('apiKey').value = items.claudeApiKey;
   });
 }
 
