@@ -4,7 +4,10 @@
   "version": "1.0",
   "description": "Enhance GitHub pull request code reviews with additional features.",
   "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": ["https://github.com/*"],
+  "host_permissions": [
+    "https://github.com/*",
+    "https://patch-diff.githubusercontent.com/*"
+  ],
   "content_scripts": [
     {
       "matches": ["https://github.com/*"],
