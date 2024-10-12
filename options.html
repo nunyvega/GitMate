@@ -1,0 +1,67 @@
+<!-- options.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gitMate Options</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #f5f7f9;
+        color: #333;
+      }
+      h1 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #34495e;
+      }
+      input[type='text'] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      button {
+        padding: 12px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      #status {
+        margin-top: 20px;
+        background-color: #e8f5e9;
+        border-radius: 4px;
+        color: #2e7d32;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>gitMate Settings</h1>
+    <form id="options-form">
+      <label for="apiKey">OpenAI API Key:</label>
+      <input type="text" id="apiKey" placeholder="Enter your OpenAI API key" required />
+      <button type="submit" id="save">Save</button>
+    </form>
+    <p id="status"></p>
+    <script src="options.js"></script>
+  </body>
+</html>
