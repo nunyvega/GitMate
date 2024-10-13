@@ -64,7 +64,6 @@ chrome.runtime.onMessage.addListener(  (request, sender, sendResponse) => {
 			.then((result) => {
 				console.log('result', result);
 				if (result) {
-					console.log('funciono');
 					let responseText;
 					if (result.aiProvider === 'anthropic') {
 						responseText = result.content[0].text;
