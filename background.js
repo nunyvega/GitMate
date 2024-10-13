@@ -6,7 +6,7 @@ async function sendDiffToAi(diff, prompt) {
 	const settings = await chrome.storage.sync.get(['aiProvider', 'aiModel']);
 	settings.aiProvider = settings.aiProvider || 'anthropic'; // Default to 'anthropic'
 	settings.aiModel = settings.aiModel || 'claude-3-5-sonnet-20240620'; // Default model
-	console.log(settings);
+	debug(settings);
 	if (settings.aiProvider === 'anthropic') {
 		apiUrl = 'https://api.anthropic.com/v1/messages';
 		apiKey = await getClaudeApiKey();
@@ -58,11 +58,11 @@ async function sendDiffToAi(diff, prompt) {
 
 // Listener for messages from content script
 chrome.runtime.onMessage.addListener(  (request, sender, sendResponse) => {
-	console.log( 'request', request );
+	debug( 'request', request );
 	if (request.type === 'sendDiffToAi') {
 		sendDiffToAi(request.diff, request.prompt)
 			.then((result) => {
-				console.log('result', result);
+				debug('result', result);
 				if (result) {
 					let responseText;
 					if (result.aiProvider === 'anthropic') {
@@ -78,7 +78,7 @@ chrome.runtime.onMessage.addListener(  (request, sender, sendResponse) => {
 			});
 		return true; // Indicate that the response will be sent asynchronously
 	} else {
-		console.log('no match');
+		debug('no match');
 	}
 });
 
