@@ -1,4 +1,5 @@
-console.log('utils.js loaded');
+console.log('Loading utils.js');
+
 // Write and export function to get key from options
 function getClaudeApiKey() {
 	return new Promise((resolve) => {
@@ -43,11 +44,16 @@ function showAiApiError( response, errorMessage ) {
 }
 
 function showGitMateProblem(errorMessage) {
-	console.info(`GitMate: ${errorMessage}`);
+	debug(`Error: ${errorMessage}`);
 }
 
 function outputMessage(message) {
-    console.log(message);
+    debug(message);
+}
+
+
+function debug(...args) {
+	console.debug('git-mate: ', ...args);
 }
 
 function createPopup(message) {
@@ -85,7 +91,7 @@ function createPopup(message) {
 	closeButton.onclick = () => popup.remove();
 
 	const content = document.createElement('div');
-	content.innerHTML = message;
+	content.innerHTML = marked(message); // Use marked to parse markdown
 	content.style.marginBottom = '10px';
 
 	const inputContainer = document.createElement('div');
