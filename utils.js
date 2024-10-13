@@ -53,7 +53,7 @@ function outputMessage(message) {
 
 
 function debug(...args) {
-	console.debug('%cgit-mate: ', 'color: blue;', ...args);
+	console.debug('%cgit-mate:', 'color: blue;', ...args);
 }
 
 function createPopup(message) {
@@ -89,9 +89,9 @@ function createPopup(message) {
 		margin-bottom: 10px;
 	`;
 	closeButton.onclick = () => popup.remove();
-
+	debug('marked', marked);
 	const content = document.createElement('div');
-	content.innerHTML = marked(message); // Use marked to parse markdown
+	content.innerHTML = marked.parse(message); // Use marked to parse markdown
 	content.style.marginBottom = '10px';
 
 	const inputContainer = document.createElement('div');

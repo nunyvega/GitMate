@@ -15,7 +15,7 @@
   "content_scripts": [
 	{
 	  "matches": ["https://github.com/*"],
-	  "js": ["content.js", "utils.js"]
+	  "js": [ "marked.min.js", "utils.js", "content.js"]
 	}
   ],
   "options_ui": {

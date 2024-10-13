@@ -60,7 +60,7 @@ async function sendFollowUpToAi(question, contentElement) {
 			} else if (response.aiProvider === 'openai') {
 				responseText = response.data.choices[0].message.content;
 			}
-			followUpResponse.innerHTML = `<strong>Follow-up:</strong> ${question}<br><strong>Response:</strong> ${responseText}`;
+			followUpResponse.innerHTML = marked.parse(responseText);
 			followUpResponse.style.marginTop = '10px';
 			followUpResponse.style.borderTop = '1px solid #ccc';
 			followUpResponse.style.paddingTop = '10px';
