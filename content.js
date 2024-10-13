@@ -13,13 +13,13 @@ function getPRDiffFromPage() {
 
 // Add a custom button to GitHub PR pages
 function addCustomButton() {
-	const diffbarDetails = document.querySelector('.diffbar.details-collapse');
-	if (diffbarDetails && !document.getElementById('gitmate-button')) {
+	const prReviewToolsBar = document.querySelector('.pr-review-tools');
+	if (prReviewToolsBar && !document.getElementById('gitmate-button')) {
 		const button = document.createElement('button');
 		button.id = 'gitmate-button';
-		button.textContent = 'gitMate Action';
+		button.textContent = 'GitMate review';
 		button.style.marginLeft = '8px';
-		button.classList.add('Button--primary', 'Button--big', 'Button');
+		button.classList.add('Button', 'Button--small', 'Button--primary',);
 		button.onclick = async () => {
 			try {
 				const diff = getPRDiffFromPage();
@@ -32,7 +32,7 @@ function addCustomButton() {
 				showGitMateProblem('Failed to send diff to AI');
 			}
 		};
-		diffbarDetails.appendChild(button);
+		prReviewToolsBar.appendChild(button);
 	}
 }
 
