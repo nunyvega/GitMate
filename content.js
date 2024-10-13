@@ -159,8 +159,8 @@ async function sendDiffToAi(diff, prompt) {
 			console.log(response);
 			if (response.success) {
 				// Assuming the desired string is in response.data.message
-				console.log('Claude AI response:', response.data.content[0].text);
-				const message = response.data.content[0].text;
+				console.log('AI Response:\n', response.text);
+				const message = response.text;
 				createPopup(message);
 				showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
 			} else {

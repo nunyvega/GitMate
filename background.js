@@ -45,7 +45,7 @@ async function sendDiffToAi(diff, prompt) {
 		if (response.ok) {
 			const result = await response.json();
 			outputMessage(`${settings.aiProvider} AI response: ${JSON.stringify(result)}`);
-			return result;
+			return { ...result, aiProvider: settings.aiProvider};
 		} else {
 			const errorMessage = await response.text();
 			showAiApiError(response, errorMessage);
@@ -65,7 +65,13 @@ chrome.runtime.onMessage.addListener(  (request, sender, sendResponse) => {
 				console.log('result', result);
 				if (result) {
 					console.log('funciono');
-					sendResponse({ success: true, data: result });
+					let responseText;
+					if (result.aiProvider === 'anthropic') {
+						responseText = result.content[0].text;
+					} else if (result.aiProvider === 'openai') {
+						responseText = result.choices[0].message.content;
+					}
+					sendResponse({ success: true, data: result, text: responseText, aiProvider: result.aiProvider });
 				}
 			})
 			.catch((error) => {
