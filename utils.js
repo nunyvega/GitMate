@@ -14,10 +14,26 @@ function setClaudeApiKey(apiKey) {
 	});
 }
 
+function getOpenAiApiKey() {
+	return new Promise((resolve) => {
+		chrome.storage.sync.get('openAiApiKey', (items) => {
+			resolve(items.openAiApiKey);
+		});
+	});
+}
+
+function setOpenAiApiKey(apiKey) {
+	return new Promise((resolve) => {
+		chrome.storage.sync.set({openAiApiKey: apiKey}, resolve);
+	});
+}
+
 if (typeof window !== 'undefined') {
 	// Expose functions globally
 	window.getClaudeApiKey = getClaudeApiKey;
 	window.setClaudeApiKey = setClaudeApiKey;
+	window.getOpenAiApiKey = getOpenAiApiKey;
+	window.setOpenAiApiKey = setOpenAiApiKey;
 }
 
 
@@ -28,4 +44,8 @@ function showAiApiError( response, errorMessage ) {
 
 function showGitMateProblem(errorMessage) {
 	console.info(`GitMate: ${errorMessage}`);
+}
+
+function outputMessage(message) {
+    console.log(message);
 }
