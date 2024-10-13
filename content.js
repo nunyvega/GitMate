@@ -87,7 +87,7 @@ async function sendDiffToAi(diff, prompt) {
 				debug('AI Response:\n', response.text);
 				const message = response.text;
 				createPopup(message);
-				showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
+				debug('gitMate action triggered and diff sent to Claude AI!');
 			} else {
 				console.error(response.error);
 				showGitMateProblem('Failed to send diff to Claude AI');
