@@ -53,7 +53,7 @@ function outputMessage(message) {
 
 
 function debug(...args) {
-	console.debug('git-mate: ', ...args);
+	console.debug('%cgit-mate: ', 'color: blue;', ...args);
 }
 
 function createPopup(message) {
