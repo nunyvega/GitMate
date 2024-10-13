@@ -228,7 +228,6 @@ async function sendFollowUpToAi(question, contentElement) {
       conversationHistory.push({role: 'Assistant', content: responseText});
 
       // Add both the user's question and the AI's response to the chat
-      addMessageToChat(contentElement, 'human', question);
       addMessageToChat(contentElement, 'assistant', responseText);
     } else {
       throw new Error(response.error);
@@ -243,11 +242,17 @@ async function sendDiffToAi(diff, prompt) {
   chrome.runtime.sendMessage({type: 'sendDiffToAi', diff, prompt}, (response) => {
     debug(response);
     if (response.success) {
-      // Assuming the desired string is in response.data.message
       debug('AI Response:\n', response.text);
       const message = response.text;
+
+      // Initialize conversation history
+      conversationHistory = [
+        {role: 'Human', content: prompt},
+        {role: 'Assistant', content: message}
+      ];
+
       createPopup(message);
-      debug('gitMate action triggered and diff sent to AI!');
+      showGitMateProblem('gitMate action triggered and diff sent to AI!');
     } else {
       console.error(response.error);
       showGitMateProblem('Failed to send diff to AI');
