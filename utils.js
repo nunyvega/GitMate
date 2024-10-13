@@ -1,4 +1,4 @@
-console.log('Loading utils.js');
+debug('Loading utils.js');
 
 // Write and export function to get key from options
 function getClaudeApiKey() {
