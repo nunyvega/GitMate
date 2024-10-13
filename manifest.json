@@ -1,30 +1,30 @@
 {
-  "manifest_version": 3,
-  "name": "gitMate",
-  "version": "1.0",
-  "description": "Enhance GitHub pull request code reviews with additional features.",
-  "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": [
+	"manifest_version": 3,
+	"name": "gitMate",
+	"version": "1.0",
+	"description": "Enhance GitHub pull request code reviews with additional features.",
+	"permissions": ["storage", "activeTab", "scripting"],
+	"host_permissions": [
 	"https://github.com/*",
 	"https://patch-diff.githubusercontent.com/*",
 	"https://api.anthropic.com/*"
-  ],
-  "background": {
+	],
+	"background": {
 	"service_worker": "background.js"
-  },
-  "content_scripts": [
+	},
+	"content_scripts": [
 	{
-	  "matches": ["https://github.com/*"],
-	  "js": [ "marked.min.js", "utils.js", "content.js"]
+		"matches": ["https://github.com/*"],
+		"js": [ "marked.min.js", "utils.js", "content.js"]
 	}
-  ],
-  "options_ui": {
+	],
+	"options_ui": {
 	"page": "options.html",
 	"open_in_tab": true
-  },
-  "icons": {
+	},
+	"icons": {
 	"16": "icons/icon16.png",
 	"48": "icons/icon48.png",
 	"128": "icons/icon128.png"
-  }
+	}
 }

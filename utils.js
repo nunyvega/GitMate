@@ -48,7 +48,7 @@ function showGitMateProblem(errorMessage) {
 }
 
 function outputMessage(message) {
-    debug(message);
+	debug(message);
 }
 
 
