@@ -30,7 +30,7 @@ async function sendDiffToAi(diff, prompt) {
 		};
 		payload = {
 			model: settings.aiModel,
-			prompt: `${prompt}\n\n${diff}`,
+			messages: [{ role: 'user', content: `${prompt}\n\n${diff}` }],
 			max_tokens: 1024,
 		};
 	}
