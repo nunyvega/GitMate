@@ -41,7 +41,7 @@ function createPopup(message) {
     top: 20px;
     right: 20px;
     width: 300px;
-    max-height: 400px;
+    max-height: 80vh;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -49,26 +49,70 @@ function createPopup(message) {
     z-index: 9999;
     overflow-y: auto;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
   `;
 
   const closeButton = document.createElement('button');
   closeButton.textContent = 'Close';
   closeButton.style.cssText = `
-    float: right;
+    align-self: flex-end;
     background-color: #f44336;
     color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 3px;
     cursor: pointer;
+    margin-bottom: 10px;
   `;
   closeButton.onclick = () => popup.remove();
 
   const content = document.createElement('div');
   content.innerHTML = message;
+  content.style.marginBottom = '10px';
+
+  const inputContainer = document.createElement('div');
+  inputContainer.style.cssText = `
+    display: flex;
+    margin-top: 10px;
+  `;
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = 'Ask a follow-up question...';
+  input.style.cssText = `
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  `;
+
+  const sendButton = document.createElement('button');
+  sendButton.textContent = 'Send';
+  sendButton.style.cssText = `
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 5px;
+  `;
+
+  sendButton.onclick = () => {
+    const followUpQuestion = input.value.trim();
+    if (followUpQuestion) {
+      sendFollowUpToClaude(followUpQuestion, content);
+      input.value = '';
+    }
+  };
+
+  inputContainer.appendChild(input);
+  inputContainer.appendChild(sendButton);
 
   popup.appendChild(closeButton);
   popup.appendChild(content);
+  popup.appendChild(inputContainer);
   document.body.appendChild(popup);
 }
 
@@ -89,6 +133,39 @@ async function sendDiffToClaudeAI(diff) {
       showGitMateProblem('Failed to send diff to Claude AI');
     }
   });
+}
+
+async function sendFollowUpToClaude(question, contentElement) {
+  const loadingMessage = document.createElement('p');
+  loadingMessage.textContent = 'Loading...';
+  contentElement.appendChild(loadingMessage);
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: 'sendDiffToClaude',
+      diff: question,
+      prompt: 'This is a follow-up question. Please answer it based on the previous context.'
+    });
+
+    loadingMessage.remove();
+
+    if (response.success) {
+      const followUpResponse = document.createElement('div');
+      followUpResponse.innerHTML = `<strong>Follow-up:</strong> ${question}<br><strong>Response:</strong> ${response.data.content[0].text}`;
+      followUpResponse.style.marginTop = '10px';
+      followUpResponse.style.borderTop = '1px solid #ccc';
+      followUpResponse.style.paddingTop = '10px';
+      contentElement.appendChild(followUpResponse);
+    } else {
+      throw new Error(response.error);
+    }
+  } catch (error) {
+    loadingMessage.remove();
+    const errorMessage = document.createElement('p');
+    errorMessage.textContent = `Error: ${error.message}`;
+    errorMessage.style.color = 'red';
+    contentElement.appendChild(errorMessage);
+  }
 }
 
 // Run the function when the DOM is fully loaded
