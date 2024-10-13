@@ -105,7 +105,7 @@ function createPopup(message) {
 	sendButton.onclick = () => {
 		const followUpQuestion = input.value.trim();
 		if (followUpQuestion) {
-			sendFollowUpToClaude(followUpQuestion, content);
+			sendFollowUpToAi(followUpQuestion, content);
 			input.value = '';
 		}
 	};
@@ -119,23 +119,31 @@ function createPopup(message) {
 	document.body.appendChild(popup);
 }
 
-async function sendFollowUpToClaude(question, contentElement) {
+async function sendFollowUpToAi(question, contentElement) {
 	const loadingMessage = document.createElement('p');
 	loadingMessage.textContent = 'Loading...';
 	contentElement.appendChild(loadingMessage);
 
 	try {
 		const response = await chrome.runtime.sendMessage({
-			type: 'sendDiffToClaude',
-			diff: question,
-			prompt: 'This is a follow-up question. Please answer it based on the previous context.'
+			type: 'sendDiffToAi',
+			diff: getPRDiffFromPage(),
+			prompt: `This is a follow-up question. Please answer it based on the previous context.
+				${question}
+			`,
 		});
 
 		loadingMessage.remove();
 
 		if (response.success) {
 			const followUpResponse = document.createElement('div');
-			followUpResponse.innerHTML = `<strong>Follow-up:</strong> ${question}<br><strong>Response:</strong> ${response.data.content[0].text}`;
+			let responseText;
+			if (response.aiProvider === 'anthropic') {
+				responseText = response.data.content[0].text;
+			} else if (response.aiProvider === 'openai') {
+				responseText = response.data.choices[0].message.content;
+			}
+			followUpResponse.innerHTML = `<strong>Follow-up:</strong> ${question}<br><strong>Response:</strong> ${responseText}`;
 			followUpResponse.style.marginTop = '10px';
 			followUpResponse.style.borderTop = '1px solid #ccc';
 			followUpResponse.style.paddingTop = '10px';
