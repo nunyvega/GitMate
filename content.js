@@ -13,44 +13,82 @@ function getPRDiffFromPage() {
 
 // Add a custom button to GitHub PR pages
 function addCustomButton() {
-	const diffbarDetails = document.querySelector('.diffbar.details-collapse');
-	if (diffbarDetails && !document.getElementById('gitmate-button')) {
-		const button = document.createElement('button');
-		button.id = 'gitmate-button';
-		button.textContent = 'gitMate Action';
-		button.style.marginLeft = '8px';
-		button.classList.add('Button--primary', 'Button--big', 'Button');
-		button.onclick = async () => {
-			try {
-				const diff = getPRDiffFromPage();
-				await sendDiffToClaudeAI(diff);
-			} catch (error) {
-				console.error(error);
-				showGitMateProblem('Failed to send diff to Claude AI');
-			}
-		};
-		diffbarDetails.appendChild(button);
-	}
+  const diffbarDetails = document.querySelector('.diffbar.details-collapse');
+  if (diffbarDetails && !document.getElementById('gitmate-button')) {
+    const button = document.createElement('button');
+    button.id = 'gitmate-button';
+    button.textContent = 'gitMate Action';
+    button.style.marginLeft = '8px';
+    button.classList.add('Button--primary', 'Button--big', 'Button');
+    button.onclick = async () => {
+      try {
+        const diff = getPRDiffFromPage();
+        await sendDiffToClaudeAI(diff);
+      } catch (error) {
+        console.error(error);
+        showGitMateProblem('Failed to send diff to Claude AI');
+      }
+    };
+    diffbarDetails.appendChild(button);
+  }
+}
+
+function createPopup(message) {
+  const popup = document.createElement('div');
+  popup.id = 'gitmate-popup';
+  popup.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    max-height: 400px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 9999;
+    overflow-y: auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  `;
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'Close';
+  closeButton.style.cssText = `
+    float: right;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  `;
+  closeButton.onclick = () => popup.remove();
+
+  const content = document.createElement('div');
+  content.innerHTML = message;
+
+  popup.appendChild(closeButton);
+  popup.appendChild(content);
+  document.body.appendChild(popup);
 }
 
 async function sendDiffToClaudeAI(diff) {
-	const prompt = `Explain the following diff in a way that is easy to understand
+  const prompt = `Explain the following diff in a way that is easy to understand
 
 	Find any issues with the code and suggest fixes.
 	`;
-	chrome.runtime.sendMessage(
-		{ type: 'sendDiffToClaude', diff: diff, prompt: prompt },
-		(response) => {
-			console.log(response);
-			if (response.success) {
-				console.log('Claude AI response:', response.data);
-				showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
-			} else {
-				console.error(response.error);
-				showGitMateProblem('Failed to send diff to Claude AI');
-			}
-		}
-	);
+  chrome.runtime.sendMessage({type: 'sendDiffToClaude', diff: diff, prompt: prompt}, (response) => {
+    console.log(response);
+    if (response.success) {
+      console.log('Claude AI response:', response.data);
+      const message = response.data.content[0].text;
+      createPopup(message);
+      showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
+    } else {
+      console.error(response.error);
+      showGitMateProblem('Failed to send diff to Claude AI');
+    }
+  });
 }
 
 // Run the function when the DOM is fully loaded
