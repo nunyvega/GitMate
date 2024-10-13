@@ -1,5 +1,5 @@
 // Log to verify the script is running
-console.log('gitMate content script loaded!!!!!!!!!!');
+debug('gitMate content script loaded!!!!!!!!!!');
 
 // Function to get the diff of the current PR from the page content
 function getPRDiffFromPage() {
@@ -81,10 +81,10 @@ async function sendDiffToAi(diff, prompt) {
 	chrome.runtime.sendMessage(
 		{ type: 'sendDiffToAi', diff, prompt },
 		(response) => {
-			console.log(response);
+			debug(response);
 			if (response.success) {
 				// Assuming the desired string is in response.data.message
-				console.log('AI Response:\n', response.text);
+				debug('AI Response:\n', response.text);
 				const message = response.text;
 				createPopup(message);
 				showGitMateProblem('gitMate action triggered and diff sent to Claude AI!');
