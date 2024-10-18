@@ -47,13 +47,12 @@ function addCustomButton() {
 		button.onclick = async () => {
 			try {
 				const diff = getPRDiffFromPage();
-				await sendDiffToAi(
-					diff,
-					`Explain the following diff in a way that is easy to understand
+				const prompt = `Explain the following diff in a way that is easy to understand
 
 				Find any issues with the code and suggest fixes.
-				`
-				);
+				`;
+				createPopup(prompt); // Show the prompt in the popup immediately
+				await sendDiffToAi(diff, prompt);
 			} catch (error) {
 				console.error(error);
 				showGitMateProblem('Failed to send diff to AI');
@@ -77,7 +76,7 @@ function createPopup(initialMessage) {
 		max-height: 600px;
 		background-color: #ffffff;
 		border: 1px solid #e1e4e8;
-		border-radius: 6px;
+		border-radius: 16px;
 		box-shadow: 0 8px 24px rgba(149,157,165,0.2);
 		z-index: 1000;
 		display: flex;
@@ -86,11 +85,11 @@ function createPopup(initialMessage) {
 
 	const header = document.createElement('div');
 	header.style.cssText = `
-		padding: 16px;
+		padding: 8px 16px;
 		background-color: #f6f8fa;
 		border-bottom: 1px solid #e1e4e8;
-		border-top-left-radius: 6px;
-		border-top-right-radius: 6px;
+		border-top-left-radius: 16px;
+		border-top-right-radius: 16px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -190,8 +189,8 @@ function addMessageToChat(contentElement, role, message) {
 function applyMessageStyling(messageDiv, role) {
 	messageDiv.style.cssText = `
 		margin-bottom: 16px;
-		padding: 12px;
-		border-radius: 6px;
+		padding: 32px;
+		border-radius: 8px;
 		max-width: 80%;
 		${
 			role === 'human'
@@ -205,7 +204,8 @@ function applyMessageStyling(messageDiv, role) {
 	codeBlocks.forEach((block) => {
 		block.style.cssText = `
 			display: block;
-			padding: 10px;
+			padding: 32px;
+			break-word: break-all;
 			overflow-x: auto;
 			background-color: #f6f8fa;
 			border-radius: 3px;
