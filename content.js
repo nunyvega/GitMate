@@ -32,7 +32,6 @@ function getPRDiffFromPage() {
 		// Add a separator between file diffs
 		diff += '\n';
 	});
-	console.log(diff);
 	return diff;
 }
 
