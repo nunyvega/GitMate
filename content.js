@@ -3,18 +3,36 @@ debug('gitMate content script loaded!!!!!!!!!!');
 
 // Function to get the diff of the current PR from the page content
 function getPRDiffFromPage() {
-	const diffElements = document.querySelectorAll('.js-file .blob-code'); // Target the code lines in diffs
+	const fileContainers = document.querySelectorAll('.file');
 	let diff = '';
-	diffElements.forEach((element) => {
-		// Add a '+' or '-' to indicate added/removed lines, or ' ' for unchanged lines
-		if (element.classList.contains('blob-code-addition')) {
-			diff += '+' + element.textContent.trim() + '\n';
-		} else if (element.classList.contains('blob-code-deletion')) {
-			diff += '-' + element.textContent.trim() + '\n';
-		} else {
-			diff += ' ' + element.textContent.trim() + '\n';
-		}
+
+	// Loop through each file in the PR
+	fileContainers.forEach((fileContainer) => {
+		// Get the filename from the file header
+		const filename = fileContainer.querySelector('.file-info a').textContent.trim();
+
+		// Add diff headers for the file
+		diff += `--- a/${filename}\n`;
+		diff += `+++ b/${filename}\n`;
+
+		// Select the lines for this file
+		const diffElements = fileContainer.querySelectorAll('.blob-code');
+
+		// Traverse through the lines and create the diff for the current file
+		diffElements.forEach((element) => {
+			if (element.classList.contains('blob-code-addition')) {
+				diff += '+' + element.textContent.trim() + '\n';
+			} else if (element.classList.contains('blob-code-deletion')) {
+				diff += '-' + element.textContent.trim() + '\n';
+			} else if (element.classList.contains('blob-code-context')) {
+				diff += ' ' + element.textContent.trim() + '\n';
+			}
+		});
+
+		// Add a separator between file diffs
+		diff += '\n';
 	});
+	console.log(diff);
 	return diff;
 }
 
