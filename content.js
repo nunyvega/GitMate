@@ -3,10 +3,17 @@ debug('gitMate content script loaded!!!!!!!!!!');
 
 // Function to get the diff of the current PR from the page content
 function getPRDiffFromPage() {
-	const diffElements = document.querySelectorAll('.js-file-line');
+	const diffElements = document.querySelectorAll('.js-file .blob-code'); // Target the code lines in diffs
 	let diff = '';
 	diffElements.forEach((element) => {
-		diff += element.textContent + '\n';
+		// Add a '+' or '-' to indicate added/removed lines, or ' ' for unchanged lines
+		if (element.classList.contains('blob-code-addition')) {
+			diff += '+' + element.textContent.trim() + '\n';
+		} else if (element.classList.contains('blob-code-deletion')) {
+			diff += '-' + element.textContent.trim() + '\n';
+		} else {
+			diff += ' ' + element.textContent.trim() + '\n';
+		}
 	});
 	return diff;
 }
